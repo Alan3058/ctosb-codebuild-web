@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base href="/" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>首页</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Bootstrap -->
+<link
+	href="https://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css"
+	rel="stylesheet">
+
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+	<div class="navbar navbar-inverse" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">ctosb-codebuild</a>
+			</div>
+		</div>
+	</div>
+	<div>
+		<div id="container" class="container  main-container">
+			<div class="col-sm-12">
+				<form class="form-horizontal">
+					<div class="col-md-12 column">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">数据源信息</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-group">
+									<label class="col-sm-2 control-label">数据源名称：</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" name="datasourceName"
+											required /> <input type="hidden" name="datasourceId" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">连接驱动：</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" name="jdbcDriver"
+											value="com.mysql.jdbc.Driver" required />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">JdbcUrl：</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" name="jdbcUrl"
+											value="jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">用户名：</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" name="jdbcUserName"
+											value="root" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">密码：</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" name="jdbcPassword"
+											value="" />
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-offset-2 col-sm-10">
+										<button type="submit" class="btn btn-default">保存</button>
+										<button type="button" class="testConnection btn btn-default">测试数据库连接</button>
+									</div>
+								</div>
+							</div>
+						</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script
+		src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="/js/jquery.formutil.js"></script>
+	<script src="/js/jurlp.min.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			var datasourceId = $.jurlp().query().datasourceId;
+			if (datasourceId) {
+				$.get("datasource/" + datasourceId + "/", function(data) {
+					$('form').fill(data);
+				}, "json");
+			}
+			$('form').submit(function() {
+				$.post("datasource/", $("form").serialize(), function(data) {
+					if (data) {
+						history.go(-1);
+					}
+				}, "json");
+			});
+			$('.testConnection').click(function(){
+				$.get('build/test/connection/datasource',$("form").serialize(),function(data){
+		    		if(data){
+		    			alert("测试成功");
+		    		}else{
+		    			alert("测试失败");
+		    		}
+		    	});
+			});
+		});
+	</script>
+</body>
+</html>

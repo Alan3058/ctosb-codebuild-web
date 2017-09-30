@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base href="/" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>首页</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Bootstrap -->
+<link
+	href="https://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css"
+	rel="stylesheet">
+
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.css">
+</head>
+<body>
+	<div class="navbar navbar-inverse" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">ctosb-codebuild</a>
+			</div>
+		</div>
+	</div>
+	<div>
+		<div id="container" class="container  main-container">
+			<div class="col-sm-12">
+				<table id="table"></table>
+			</div>
+		</div>
+	</div>
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script
+		src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.js"></script>
+	<script src="/js/jurlp.min.js"></script>
+	<script src="/js/jquery.formutil.js"></script>
+	<script type="text/javascript">
+	$(function(){
+		var datasourceId = $.jurlp().query().datasourceId;
+		$('#table').bootstrapTable({
+		    url: 'build/tableInfo/?datasourceId='+datasourceId,
+		    search: true,
+		    showRefresh: true,
+		    columns: [{
+		        field: 'tabName',
+		        title: '表名称'
+		    }, {
+		        field: 'tabComment',
+		        title: '备注'
+		    }, {
+		        field: 'tabType',
+		        title: '类型'
+		    }, {
+		        title: '操作',
+		        formatter: function(value,row,index){
+		        	return '<a href="datasource.html?datasourceId='+datasourceId+'" class="btn btn-default">编辑数据源</a>';
+		        }
+		    }]
+		});
+	});
+	</script>
+</body>
+</html>

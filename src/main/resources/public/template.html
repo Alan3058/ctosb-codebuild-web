@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base href="/" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>首页</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Bootstrap -->
+<link
+	href="https://cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css"
+	rel="stylesheet">
+
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+	<div class="navbar navbar-inverse" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">ctosb-codebuild</a>
+			</div>
+		</div>
+	</div>
+	<div>
+		<div id="container" class="container  main-container">
+			<div class="col-sm-12">
+				<form class="form-horizontal">
+					<div class="col-md-12 column">
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">模版信息</h3>
+							</div>
+							<div class="panel-body">
+								<div class="form-group">
+									<label class="col-sm-2 control-label">模版名称：</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" name="templateName" required/>
+										<input type="hidden" name="configId"/>
+										<input type="hidden" name="templateId"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">生成源文件夹：</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" name="generateSourceFolder"
+											value="src/main/webapp" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">生成文件包路径：</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" name="generatePackagePath"
+											value="com/ctosb/test" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">生成文件后缀：</label>
+									<div class="col-sm-10">
+										<input type="text" class="form-control" name="generateSuffix"
+											value="Model.java" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">模版内容：</label>
+									<div class="col-sm-10">
+										<textarea class="form-control" name="templateContent"></textarea>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-offset-2 col-sm-10">
+										<button type="submit" class="btn btn-default">保存</button>
+									</div>
+								</div>
+							</div>
+						</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+	<!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script
+		src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="/js/jquery.formutil.js"></script>
+	<script src="/js/jurlp.min.js"></script>
+	<script type="text/javascript">
+	$(function(){
+		var templateId = $.jurlp().query().templateId;
+		if(templateId){
+			$.get("template/"+templateId,function(data){
+				$('form').fill(data);
+			},"json");
+		}else{
+			$('form').fill({"configId":$.jurlp().query().configId});
+		}
+		$('form').submit(function(){
+			$.post("template/",$("form").serialize(),function(data){
+				if(data){
+					history.go(-1);
+				}
+			},"json");
+		}); 
+	});
+	</script>
+</body>
+</html>
