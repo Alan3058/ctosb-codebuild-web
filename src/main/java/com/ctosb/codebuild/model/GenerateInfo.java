@@ -29,6 +29,10 @@ public class GenerateInfo {
 	 */
 	private String packagePath;
 	/**
+	 * 生成包名
+	 */
+	private String packageName;
+	/**
 	 * 生成内容
 	 */
 	private String content;
@@ -51,6 +55,14 @@ public class GenerateInfo {
 
 	public void setPackagePath(String packagePath) {
 		this.packagePath = packagePath;
+	}
+
+	public String getPackageName() {
+		return packageName;
+	}
+
+	public void setPackageName(String packageName) {
+		this.packageName = packageName;
 	}
 
 	public String getContent() {

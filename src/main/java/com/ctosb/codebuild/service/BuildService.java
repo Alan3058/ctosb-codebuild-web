@@ -12,6 +12,7 @@
 
 package com.ctosb.codebuild.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.sql.Connection;
@@ -133,7 +134,8 @@ public class BuildService {
 				GenerateInfo generateInfo = new GenerateInfo();
 				generateInfo.setFileName(tableInfo.getUpperCamelTabName() + template.getGenerateSuffix());
 				generateInfo.setSourceFolder(template.getGenerateSourceFolder());
-				generateInfo.setPackagePath(template.getGeneratePackagePath());
+				generateInfo.setPackagePath(template.getGeneratePackagePath().replace(".", File.separator));
+				generateInfo.setPackageName(template.getGeneratePackagePath().replaceAll("[/\\\\]", "."));
 				generateInfo.setContent(generate(template.getTemplateContent(), buildInfo));
 				generateInfos.add(generateInfo);
 			}

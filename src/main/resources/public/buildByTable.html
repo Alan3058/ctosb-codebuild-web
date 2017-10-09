@@ -31,6 +31,9 @@
 	<div>
 		<div id="container" class="container  main-container">
 			<div class="col-sm-12">
+				<div id="toolbar">
+		            <a class="downloadFile btn btn-default">下载</a>
+		        </div>
 				<table id="table"></table>
 				<br><br>
 				<form class="form-horizontal">
@@ -43,7 +46,7 @@
 								<div class="form-group">
 									<label class="col-sm-2 control-label">名称：</label>
 									<div class="col-sm-10">
-										<input type="text" class="form-control" name="name"/> 
+										<input type="text" class="form-control" name="fileName"/> 
 									</div>
 								</div>
 								<div class="form-group">
@@ -86,8 +89,12 @@
 		$('#table').bootstrapTable({
 		    url: 'build/tableInfo/?datasourceId='+datasourceId,
 		    search: true,
+		    toolbar: '#toolbar',
 		    showRefresh: true,
+		    clickToSelect: true,
 		    columns: [{
+		        checkbox: true
+		    },{
 		        field: 'tabName',
 		        title: '表名称'
 		    }, {
@@ -115,6 +122,19 @@
 		        	return preview + download;
 		        }
 		    }]
+		});
+		
+		$(".downloadFile").click(function(){
+			var rows = $('#table').bootstrapTable("getSelections");
+			if(rows.length <= 0){
+				alert("请先选择记录");
+				return;
+			}
+			var url = "build/download/tables/?configId="+configId;
+			$.each(rows,function(i,row){
+				url += "&tableNames[]="+row.tabName;
+			});
+			window.location.href = url;
 		});
 	});
 	</script>

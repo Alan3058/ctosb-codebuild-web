@@ -5,6 +5,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletResponse;
@@ -57,6 +58,32 @@ public class BuildController {
 			@ApiParam(required = true, name = "tableName", value = "表名") @RequestParam("tableName") String tableName,
 			HttpServletResponse response) throws IOException {
 		Collection<GenerateInfo> generateInfos = buildService.buildByConfigIdAndTableName(configId, tableName);
+		download(generateInfos, response);
+	}
+
+	@RequestMapping(value = "/download/tables", method = RequestMethod.GET)
+	@ApiOperation(value = "批量下载生成的源代码压缩包")
+	public void downloadBuildByConfigIdAndTableNames(
+			@ApiParam(required = true, name = "configId", value = "配置id") @RequestParam("configId") String configId,
+			@ApiParam(required = true, name = "tableName", value = "表名") @RequestParam("tableNames[]") String[] tableNames,
+			HttpServletResponse response) throws IOException {
+		Collection<GenerateInfo> generateInfos = new ArrayList<GenerateInfo>();
+		for (String tableName : tableNames) {
+			generateInfos.addAll(buildService.buildByConfigIdAndTableName(configId, tableName));
+		}
+		download(generateInfos, response);
+	}
+
+	/**
+	 * 下载生成源码文件
+	 * @date 2017年10月4日上午10:37:07
+	 * @author liliangang-1163
+	 * @since 1.0.0
+	 * @param generateInfos
+	 * @param response
+	 * @throws IOException
+	 */
+	private void download(Collection<GenerateInfo> generateInfos, HttpServletResponse response) throws IOException {
 		File tmpFolder = new File("tmp");
 		FileUtils.forceMkdir(tmpFolder);
 		File zip = new File(tmpFolder, "src.zip");
@@ -72,6 +99,7 @@ public class BuildController {
 			if (!file.exists()) {
 				file.createNewFile();
 			}
+			FileUtils.write(file, generateInfo.getContent(), "utf-8");
 			ZipArchiveEntry entry = new ZipArchiveEntry(file, directory + file.getName());
 			archiveOutputStream.putArchiveEntry(entry);
 			archiveOutputStream.write(FileUtils.readFileToByteArray(file));
