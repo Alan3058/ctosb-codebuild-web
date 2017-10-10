@@ -36,8 +36,10 @@ import com.ctosb.codebuild.model.BuildInfo;
 import com.ctosb.codebuild.model.ColumnInfo;
 import com.ctosb.codebuild.model.GenerateInfo;
 import com.ctosb.codebuild.model.TableInfo;
+import com.ctosb.codebuild.util.CamelCaseUtil;
 import com.ctosb.codebuild.util.DbUtil;
 import com.ctosb.codebuild.util.EmptyUtil;
+import com.ctosb.codebuild.util.TypeMappingUtil;
 
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
@@ -98,6 +100,8 @@ public class BuildService {
 				tableInfo.setTabName(rs.getString("TABLE_NAME"));// 表名
 				tableInfo.setTabComment(rs.getString("REMARKS"));// 表备注
 				tableInfo.setTabType(rs.getString("TABLE_TYPE"));// 表类型
+				tableInfo.setUpperCamelTabName(CamelCaseUtil.toUpperCamelCase(tableInfo.getTabName()));
+				tableInfo.setCamelTabName(CamelCaseUtil.toCamelCase(tableInfo.getTabName()));
 				if (withLoadColumn) {
 					// 加载列信息
 					tableInfo.setColumns(getColumnInfoByTableName(connection, tableName));
@@ -130,12 +134,11 @@ public class BuildService {
 			buildInfo.setTableInfo(tableInfo);
 			buildInfo.setColumnInfos(tableInfo.getColumns());
 			for (Template template : templates) {
-				buildInfo.setPackageName(template.getGeneratePackagePath());
+				buildInfo.setPackageName(template.getGeneratePackagePath().replaceAll("[/\\\\]", "."));
 				GenerateInfo generateInfo = new GenerateInfo();
 				generateInfo.setFileName(tableInfo.getUpperCamelTabName() + template.getGenerateSuffix());
 				generateInfo.setSourceFolder(template.getGenerateSourceFolder());
 				generateInfo.setPackagePath(template.getGeneratePackagePath().replace(".", File.separator));
-				generateInfo.setPackageName(template.getGeneratePackagePath().replaceAll("[/\\\\]", "."));
 				generateInfo.setContent(generate(template.getTemplateContent(), buildInfo));
 				generateInfos.add(generateInfo);
 			}
@@ -215,6 +218,9 @@ public class BuildService {
 				ColumnInfo col = new ColumnInfo();
 				col.setColName(columnName);
 				col.setColType(columnType);
+				col.setJavaColType(TypeMappingUtil.getType(columnType.toUpperCase()));
+				col.setUpperCamelColName(CamelCaseUtil.toUpperCamelCase(columnName));
+				col.setCamelColName(CamelCaseUtil.toCamelCase(columnName));
 				col.setNullable(nullable == 1);// 是否可为空
 				col.setColComment(columnRemark);// 设置备注
 				col.setPrimary(primaryKeys.contains(columnName)); // 判断是否主键

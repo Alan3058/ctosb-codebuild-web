@@ -3,7 +3,6 @@ package com.ctosb.codebuild.model;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.ctosb.codebuild.util.CamelCaseUtil;
 import com.ctosb.codebuild.util.EmptyUtil;
 
 /**
@@ -77,7 +76,7 @@ public class TableInfo {
     }
 
     public String getCamelTabName() {
-        return camelTabName != null ? camelTabName : CamelCaseUtil.toCamelCase(tabName);
+        return camelTabName;
     }
 
     public void setCamelTabName(String camelTabName) {
@@ -85,7 +84,7 @@ public class TableInfo {
     }
 
     public String getUpperCamelTabName() {
-        return upperCamelTabName != null ? upperCamelTabName : CamelCaseUtil.toUpperCamelCase(tabName);
+        return upperCamelTabName;
     }
 
     public void setUpperCamelTabName(String upperCamelTabName) {

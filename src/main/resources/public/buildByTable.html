@@ -86,6 +86,7 @@
 	$(function(){
 		var datasourceId = $.jurlp().query().datasourceId;
 		var configId = $.jurlp().query().configId;
+		var templateHtml = $('form .panel-body').html();
 		$('#table').bootstrapTable({
 		    url: 'build/tableInfo/?datasourceId='+datasourceId,
 		    search: true,
@@ -107,10 +108,9 @@
 		        title: '操作',
 		        events: {'click .preview':function(e, value, row, index){
 			    	$.get("build/preview/table/",{"configId":configId,"tableName":row.tabName},function(data){
-			    		var html = $('form .panel-body').html();
 			    		$('form .panel-body').html("");
 			    		for(var i=0;i<data.length;i++){
-			    			$('form .panel-body').append($(html).fill(data[i]));
+			    			$('form .panel-body').append($(templateHtml).fill(data[i]));
 			    		}
 			    	});	
 			    },'click .download':function(e, value, row, index){
