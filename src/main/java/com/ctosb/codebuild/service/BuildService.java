@@ -17,7 +17,9 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +39,7 @@ import com.ctosb.codebuild.model.ColumnInfo;
 import com.ctosb.codebuild.model.GenerateInfo;
 import com.ctosb.codebuild.model.TableInfo;
 import com.ctosb.codebuild.util.CamelCaseUtil;
+import com.ctosb.codebuild.util.CloseUtil;
 import com.ctosb.codebuild.util.DbUtil;
 import com.ctosb.codebuild.util.EmptyUtil;
 import com.ctosb.codebuild.util.TypeMappingUtil;
@@ -110,8 +113,75 @@ public class BuildService {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			CloseUtil.close(connection);
 		}
 		return tableInfos;
+	}
+
+	/**
+	 * 通过数据库连接和sql获取表信息
+	 * @date 2017年10月10日下午1:39:16
+	 * @author liliangang-1163
+	 * @since 1.0.0
+	 * @param connection
+	 * @param sql
+	 * @return
+	 */
+	public TableInfo getTableInfoBySql(Connection connection, String sql) {
+		TableInfo tableInfo = new TableInfo();
+		try {
+			PreparedStatement ps = connection.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			ResultSetMetaData rsmd = rs.getMetaData();
+			for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+				ColumnInfo columnInfo = new ColumnInfo();
+				columnInfo.setColName(rsmd.getColumnLabel(i));// 列名
+				columnInfo.setColType(rsmd.getColumnTypeName(i));// 列类型
+				columnInfo.setJavaColType(rsmd.getColumnClassName(i));// java类型
+				columnInfo.setUpperCamelColName(CamelCaseUtil.toUpperCamelCase(columnInfo.getColName()));
+				columnInfo.setCamelColName(CamelCaseUtil.toCamelCase(columnInfo.getColName()));
+				tableInfo.addColumns(columnInfo);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			CloseUtil.close(connection);
+		}
+		return tableInfo;
+	}
+
+	/**
+	 * 生成数据库表的构建信息
+	 * @date 2017年10月10日下午1:48:14
+	 * @author liliangang-1163
+	 * @since 1.0.0
+	 * @param configId
+	 * @param name
+	 * @param sql
+	 * @return
+	 */
+	public Collection<GenerateInfo> buildByConfigIdAndSql(String configId, String name, String sql) {
+		Config config = configService.getById(configId);
+		Datasource datasource = datasourceRepository.findOne(config.getDatasourceId());
+		List<Template> templates = templateRepository.findByConfigId(config.getConfigId());
+		TableInfo tableInfo = getTableInfoBySql(getConnection(datasource), sql);
+		tableInfo.setUpperCamelTabName(name.substring(0, 1).toUpperCase() + name.substring(1));
+		tableInfo.setCamelTabName(name.substring(0, 1).toLowerCase() + name.substring(1));
+		List<GenerateInfo> generateInfos = new ArrayList<>();
+		BuildInfo buildInfo = new BuildInfo();
+		buildInfo.setTableInfo(tableInfo);
+		buildInfo.setColumnInfos(tableInfo.getColumns());
+		for (Template template : templates) {
+			buildInfo.setPackageName(template.getGeneratePackagePath().replaceAll("[/\\\\]", "."));
+			GenerateInfo generateInfo = new GenerateInfo();
+			generateInfo.setFileName(tableInfo.getUpperCamelTabName() + template.getGenerateSuffix());
+			generateInfo.setSourceFolder(template.getGenerateSourceFolder());
+			generateInfo.setPackagePath(template.getGeneratePackagePath().replace(".", File.separator));
+			generateInfo.setContent(generate(template.getTemplateContent(), buildInfo));
+			generateInfos.add(generateInfo);
+		}
+		return generateInfos;
 	}
 
 	/**

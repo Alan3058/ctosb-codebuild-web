@@ -111,8 +111,9 @@
 		        	var edit = '<a class="btn btn-default" href="config.html?configId='+row.configId+'">编辑</a>';
 		        	var addDatasource = '<a class="datasource btn btn-default">添加数据源</a>';
 		        	var addTemplate = '<a class="btn btn-default" href="template.html?configId='+row.configId+'">添加模版</a>';
-		        	var build = '<a class="btn btn-default" href="buildByTable.html?configId='+row.configId+'&datasourceId='+row.datasourceId+'">生成</a>';
-		        	return edit+addDatasource+addTemplate+build;
+		        	var buildByTable = '<a class="btn btn-default" href="buildByTable.html?configId='+row.configId+'&datasourceId='+row.datasourceId+'">按表生成</a>';
+		        	var buildBySql = '<a class="btn btn-default" href="buildBySql.html?configId='+row.configId+'&datasourceId='+row.datasourceId+'">按SQL生成</a>';
+		        	return edit+addDatasource+addTemplate+buildByTable+buildBySql;
 		        }
 		    }]
 		});

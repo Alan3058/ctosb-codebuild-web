@@ -43,6 +43,26 @@ public class BuildController {
 		return buildService.getTableInfoByTableName(datasourceId, null);
 	}
 
+	@RequestMapping(value = "/preview/sql", method = RequestMethod.GET)
+	@ApiOperation(value = "通过sql，预览生成的源代码")
+	public Collection<GenerateInfo> buildByConfigIdAndSql(
+			@ApiParam(required = true, name = "configId", value = "配置id") @RequestParam("configId") String configId,
+			@ApiParam(required = true, name = "name", value = "Item名称") @RequestParam("name") String name,
+			@ApiParam(required = true, name = "sql", value = "Sql") @RequestParam("sql") String sql) {
+		return buildService.buildByConfigIdAndSql(configId, name, sql);
+	}
+
+	@RequestMapping(value = "/download/sql", method = RequestMethod.GET)
+	@ApiOperation(value = "通过sql，下载生成的源代码压缩包")
+	public void downloadBuildByConfigIdAndSql(
+			@ApiParam(required = true, name = "configId", value = "配置id") @RequestParam("configId") String configId,
+			@ApiParam(required = true, name = "name", value = "Item名称") @RequestParam("name") String name,
+			@ApiParam(required = true, name = "sql", value = "Sql") @RequestParam("sql") String sql,
+			HttpServletResponse response) throws IOException {
+		Collection<GenerateInfo> generateInfos = buildService.buildByConfigIdAndSql(configId, name, sql);
+		download(generateInfos, response);
+	}
+
 	@RequestMapping(value = "/preview/table", method = RequestMethod.GET)
 	@ApiOperation(value = "通过表名，预览生成的源代码")
 	public Collection<GenerateInfo> buildByConfigIdAndTableName(
@@ -52,7 +72,7 @@ public class BuildController {
 	}
 
 	@RequestMapping(value = "/download/table", method = RequestMethod.GET)
-	@ApiOperation(value = "下载生成的源代码压缩包")
+	@ApiOperation(value = "通过表名，下载生成的源代码压缩包")
 	public void downloadBuildByConfigIdAndTableName(
 			@ApiParam(required = true, name = "configId", value = "配置id") @RequestParam("configId") String configId,
 			@ApiParam(required = true, name = "tableName", value = "表名") @RequestParam("tableName") String tableName,
@@ -62,7 +82,7 @@ public class BuildController {
 	}
 
 	@RequestMapping(value = "/download/tables", method = RequestMethod.GET)
-	@ApiOperation(value = "批量下载生成的源代码压缩包")
+	@ApiOperation(value = "通过表名，批量下载生成的源代码压缩包")
 	public void downloadBuildByConfigIdAndTableNames(
 			@ApiParam(required = true, name = "configId", value = "配置id") @RequestParam("configId") String configId,
 			@ApiParam(required = true, name = "tableName", value = "表名") @RequestParam("tableNames[]") String[] tableNames,
