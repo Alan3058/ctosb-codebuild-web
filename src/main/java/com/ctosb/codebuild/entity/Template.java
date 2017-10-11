@@ -36,8 +36,13 @@ public class Template {
 	/**
 	 * 模版内容
 	 */
-	@Column(length=20000)
+	@Column(length = 20000)
 	private String templateContent;
+	/**
+	 * 模版类型（bySql、byTable）
+	 */
+	@Column
+	private String templateType;
 	/**
 	 * 生成源文件夹
 	 */
@@ -84,6 +89,16 @@ public class Template {
 
 	public void setTemplateContent(String templateContent) {
 		this.templateContent = templateContent;
+	}
+
+	
+	public String getTemplateType() {
+		return templateType;
+	}
+
+	
+	public void setTemplateType(String templateType) {
+		this.templateType = templateType;
 	}
 
 	public String getGenerateSourceFolder() {
