@@ -15,6 +15,8 @@ package com.ctosb.codebuild.dao;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 import com.ctosb.codebuild.entity.Template;
 
@@ -28,4 +30,12 @@ public interface TemplateRepository extends JpaRepository<Template, String> {
 	List<Template> findByConfigId(String configId);
 
 	List<Template> findByConfigIdIn(List<String> configIds);
+
+	@Modifying
+	@Query("update Template a set a.configId = NULL where a.configId = ?1 and a.templateType = ?2")
+	int updateConfigIdIsNullByConfigIdAndTemplateType(String configId, String templateType);
+
+	@Modifying
+	@Query("update Template a set a.configId = ?1 where a.templateId in ?2")
+	int updateConfigIdByTemplateIds(String configId, List<String> templateIds);
 }

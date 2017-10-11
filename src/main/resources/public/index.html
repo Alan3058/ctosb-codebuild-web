@@ -52,7 +52,7 @@
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	        <h4 class="modal-title" id="datasourceModalLabel">选择模版</h4>
+	        <h4 class="modal-title" id="datasourceModalLabel">选择数据源</h4>
 	      </div>
 	      <div class="modal-body">
 	      	<div id="datasourceToolbar">
@@ -63,6 +63,27 @@
 	      <div class="modal-footer">
 	        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 	        <button type="button" class="btn btn-primary" id="datasourceSave">保存</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<!-- templateModal -->
+	<div class="modal fade" id="templateModal" tabindex="-1" role="dialog" aria-labelledby="templateModalLabel">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="templateModalLabel">选择模版</h4>
+	      </div>
+	      <div class="modal-body">
+	      	<div id="templateToolbar">
+		     	<a href="template.html" class="btn btn-default">添加</a>
+		    </div>
+	        <table id="templateTable"></table>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+	        <button type="button" class="btn btn-primary" id="templateSave">保存</button>
 	      </div>
 	    </div>
 	  </div>
@@ -78,8 +99,15 @@
 	<script type="text/javascript">
 	$(function(){
 		var operateEvents = {'click .datasource': function (e, value, row, index) {
-	        	    	 		processDatasource(row);
-	        	    	 	}};
+	        	    	 								processDatasource(row);
+	        	    	 						  }
+							,'click .addTableTemplate': function (e, value, row, index) {
+															processTemplate(row,'byTable');
+	        	    	 								}
+							,'click .addSqlTemplate': function (e, value, row, index) {
+															processTemplate(row,'bySql');
+	        	    	 								}
+							};
 		
 		$('#table').bootstrapTable({
 		    url: 'config/?configName=',
@@ -96,11 +124,24 @@
 		        	return row.datasource ? row.datasource.datasourceName : "";
 		        }
 		    }, {
-		        title: '模版',
+		        title: 'byTable模版',
 		        formatter: function(value,row,index){
 		        	var name="";
 		        	$.each(row.templates,function(k,v){
-		        		name = v.templateName ? name+","+v.templateName : name;
+		        		if(v.templateType == "byTable"){
+			        		name = v.templateName ? name+","+v.templateName : name;
+		        		}
+		        	});
+		        	return name ? name.substr(1) : name;
+		        }
+		    }, {
+		        title: 'bySql模版',
+		        formatter: function(value,row,index){
+		        	var name="";
+		        	$.each(row.templates,function(k,v){
+		        		if(v.templateType == "bySql"){
+		        			name = v.templateName ? name+","+v.templateName : name;
+		        		}
 		        	});
 		        	return name ? name.substr(1) : name;
 		        }
@@ -110,10 +151,12 @@
 		        formatter: function(value,row,index){
 		        	var edit = '<a class="btn btn-default" href="config.html?configId='+row.configId+'">编辑</a>';
 		        	var addDatasource = '<a class="datasource btn btn-default">添加数据源</a>';
-		        	var addTemplate = '<a class="btn btn-default" href="template.html?configId='+row.configId+'">添加模版</a>';
+		        	var addTableTemplate = '<a class="addTableTemplate btn btn-default">添加byTable模版</a>';
+		        	var addSqlTemplate = '<a class="addSqlTemplate btn btn-default">添加bySql模版</a>';
+		        	var addTemplate = '<a class="btn btn-default" href="template.html?configId='+row.configId+'">新增模版</a>';
 		        	var buildByTable = '<a class="btn btn-default" href="buildByTable.html?configId='+row.configId+'&datasourceId='+row.datasourceId+'">按表生成</a>';
 		        	var buildBySql = '<a class="btn btn-default" href="buildBySql.html?configId='+row.configId+'&datasourceId='+row.datasourceId+'">按SQL生成</a>';
-		        	return edit+addDatasource+addTemplate+buildByTable+buildBySql;
+		        	return edit+addDatasource+addTableTemplate+addSqlTemplate+addTemplate+buildByTable+buildBySql;
 		        }
 		    }]
 		});
@@ -146,12 +189,57 @@
 					});
 					$.post("config/datasource",{"configId":configId,"datasourceId":arr[0]},function(data){
 						if(data){
-							history.go(-2);
+							datasourceModal.modal('hide');
 						}
 					});
 				});	
 			});
 			datasourceModal.modal('show');
+		}
+		var processTemplate= function(row, type){
+			//添加模版
+			var templateModal = $("#templateModal");
+			var templateTable = $('#templateTable');
+        	var configId = row.configId;
+			templateModal.on("show.bs.modal",function(){
+				templateTable.bootstrapTable({
+				    search: true,
+				    toolbar: '#templateToolbar',
+				    showRefresh: true,
+				    clickToSelect: true,
+				    singleSelect: false,
+				    columns: [{
+				        checkbox: true
+				    },{
+				        field: 'templateName',
+				        title: '模版名称'
+				    },{
+				        field: 'templateType',
+				        title: '模版类型'
+				    }]
+				});
+				$.get('template/list/',function(data){
+					data = $.map(data,function(item){
+						if(item.templateType == type && (item.configId == null || item.configId == configId)){
+							return item;
+						}
+					});
+					templateTable.bootstrapTable("load",data);
+					templateTable.bootstrapTable("checkBy",{field:'configId',values:[configId]});
+				});
+				$("#templateSave").click(function(){
+					var arr = templateTable.bootstrapTable("getSelections");
+					arr = $.map(arr,function(item){
+						return item.templateId;
+					});
+					$.post("config/template",{"configId":configId,"templateType":type,"templateIds":arr},function(data){
+						if(data){
+							templateModal.modal('hide');
+						}
+					});
+				});	
+			});
+			templateModal.modal('show');
 		}
 	});
 	</script>

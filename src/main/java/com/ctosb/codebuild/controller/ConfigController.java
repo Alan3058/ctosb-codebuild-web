@@ -54,4 +54,12 @@ public class ConfigController {
 			@ApiParam(required = true, name = "datasourceId", value = "数据源Id") @RequestParam("datasourceId") String datasourceId) {
 		return configService.updateDatasourceIdByConfigId(datasourceId, configId);
 	}
+	@RequestMapping(value = "/template", method = RequestMethod.POST)
+	@ApiOperation(value = "添加数据源")
+	public int addTemplate(
+			@ApiParam(required = true, name = "configId", value = "配置Id") @RequestParam("configId") String configId,
+			@ApiParam(required = true, name = "templateType", value = "模版类型") @RequestParam("templateType") String templateType,
+			@ApiParam(required = true, name = "templateIds[]", value = "模版Id") @RequestParam("templateIds[]") List<String> templateIds) {
+		return configService.updateConfigIdIdByTemplateIds(configId, templateIds, templateType);
+	}
 }

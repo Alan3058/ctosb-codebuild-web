@@ -82,4 +82,10 @@ public class ConfigService {
 	public int updateDatasourceIdByConfigId(String datasourceId, String configId) {
 		return configRepository.updateDatasourceIdByConfigId(datasourceId, configId);
 	}
+
+	@Transactional
+	public int updateConfigIdIdByTemplateIds(String configId, List<String> templateIds, String templateType) {
+		templateRepository.updateConfigIdIsNullByConfigIdAndTemplateType(configId, templateType);
+		return templateRepository.updateConfigIdByTemplateIds(configId, templateIds);
+	}
 }
