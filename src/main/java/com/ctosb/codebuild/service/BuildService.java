@@ -205,6 +205,7 @@ public class BuildService {
 			buildInfo.setColumnInfos(tableInfo.getColumns());
 			for (Template template : templates) {
 				buildInfo.setPackageName(template.getGeneratePackagePath().replaceAll("[/\\\\]", "."));
+				buildInfo.setBasePackageName(template.getGenerateBasePackagePath().replaceAll("[/\\\\]", "."));
 				GenerateInfo generateInfo = new GenerateInfo();
 				generateInfo.setFileName(tableInfo.getUpperCamelTabName() + template.getGenerateSuffix());
 				generateInfo.setSourceFolder(template.getGenerateSourceFolder());

@@ -49,6 +49,11 @@ public class Template {
 	@Column
 	private String generateSourceFolder;
 	/**
+	 * 生成文件基本包路径
+	 */
+	@Column
+	private String generateBasePackagePath;
+	/**
 	 * 生成文件包路径
 	 */
 	@Column
@@ -91,12 +96,10 @@ public class Template {
 		this.templateContent = templateContent;
 	}
 
-	
 	public String getTemplateType() {
 		return templateType;
 	}
 
-	
 	public void setTemplateType(String templateType) {
 		this.templateType = templateType;
 	}
@@ -107,6 +110,14 @@ public class Template {
 
 	public void setGenerateSourceFolder(String generateSourceFolder) {
 		this.generateSourceFolder = generateSourceFolder;
+	}
+
+	public String getGenerateBasePackagePath() {
+		return generateBasePackagePath;
+	}
+
+	public void setGenerateBasePackagePath(String generateBasePackagePath) {
+		this.generateBasePackagePath = generateBasePackagePath;
 	}
 
 	public String getGeneratePackagePath() {
