@@ -48,6 +48,12 @@
 	<script src="/js/jquery.formutil.js"></script>
 	<script type="text/javascript">
 	$(function(){
+		var operateEvents = {'click .copyTemplate': function (e, value, row, index) {
+														$.post("template/copy/"+row.templateId,{},function(data){
+															$("#table").bootstrapTable("insertRow",{index:0,row:data});
+														});
+													}
+							};
 		$('#table').bootstrapTable({
 		    url: 'template/list/',
 		    search: true,
@@ -61,9 +67,11 @@
 		        title: '模版类型'
 		    }, {
 		        title: '操作',
+		        events: operateEvents,
 		        formatter: function(value,row,index){
 		        	var edit = '<a class="btn btn-default" href="template.html?templateId='+row.templateId+'">编辑</a>';
-		        	return edit;
+		        	var copyTemplate = '<a class="copyTemplate btn btn-default">复制</a>';
+		        	return edit+copyTemplate;
 		        }
 		    }]
 		});

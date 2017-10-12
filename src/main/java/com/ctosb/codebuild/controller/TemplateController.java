@@ -28,8 +28,16 @@ public class TemplateController {
 
 	@RequestMapping(value = "/", method = RequestMethod.POST)
 	@ApiOperation(value = "新增模版")
-	public Object save(@ApiParam(required = true, name = "config", value = "模版信息") @ModelAttribute Template template) {
+	public Template save(
+			@ApiParam(required = true, name = "config", value = "模版信息") @ModelAttribute Template template) {
 		return templateService.save(template);
+	}
+
+	@RequestMapping(value = "/copy/{templateId}", method = RequestMethod.POST)
+	@ApiOperation(value = "复制模版")
+	public Template copy(
+			@ApiParam(required = true, name = "templateId", value = "模版id") @PathVariable("templateId") String templateId) {
+		return templateService.copy(templateId);
 	}
 
 	@RequestMapping(value = "/{templateId}", method = RequestMethod.GET)

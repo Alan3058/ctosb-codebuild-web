@@ -14,6 +14,7 @@ package com.ctosb.codebuild.service;
 
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,6 +34,16 @@ public class TemplateService {
 
 	public Template save(Template template) {
 		return templateRepository.save(template);
+	}
+
+	public Template copy(String templateId) {
+		Template template = templateRepository.findOne(templateId);
+		Template newTemplate = new Template();
+		BeanUtils.copyProperties(template, newTemplate);
+		newTemplate.setConfigId(null);
+		newTemplate.setTemplateId(null);
+		newTemplate.setTemplateName("copy" + template.getTemplateName());
+		return templateRepository.save(newTemplate);
 	}
 
 	public List<Template> findByConfigId(String configId) {
