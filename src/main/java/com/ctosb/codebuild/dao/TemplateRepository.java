@@ -27,6 +27,8 @@ import com.ctosb.codebuild.entity.Template;
  */
 public interface TemplateRepository extends JpaRepository<Template, String> {
 
+	List<Template> findByConfigIdAndTemplateType(String configId, String templateType);
+
 	List<Template> findByConfigId(String configId);
 
 	List<Template> findByConfigIdIn(List<String> configIds);

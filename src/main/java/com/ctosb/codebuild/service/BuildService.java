@@ -164,7 +164,7 @@ public class BuildService {
 	public Collection<GenerateInfo> buildByConfigIdAndSql(String configId, String name, String sql) {
 		Config config = configService.getById(configId);
 		Datasource datasource = datasourceRepository.findOne(config.getDatasourceId());
-		List<Template> templates = templateRepository.findByConfigId(config.getConfigId());
+		List<Template> templates = templateRepository.findByConfigIdAndTemplateType(config.getConfigId(), "bySql");
 		TableInfo tableInfo = getTableInfoBySql(getConnection(datasource), sql);
 		tableInfo.setUpperCamelTabName(name.substring(0, 1).toUpperCase() + name.substring(1));
 		tableInfo.setCamelTabName(name.substring(0, 1).toLowerCase() + name.substring(1));
@@ -196,7 +196,7 @@ public class BuildService {
 	public Collection<GenerateInfo> buildByConfigIdAndTableName(String configId, String tableName) {
 		Config config = configService.getById(configId);
 		Datasource datasource = datasourceRepository.findOne(config.getDatasourceId());
-		List<Template> templates = templateRepository.findByConfigId(config.getConfigId());
+		List<Template> templates = templateRepository.findByConfigIdAndTemplateType(config.getConfigId(), "byTable");
 		Collection<TableInfo> tableInfos = getTableInfoByTableName(getConnection(datasource), tableName, true);
 		List<GenerateInfo> generateInfos = new ArrayList<>();
 		for (TableInfo tableInfo : tableInfos) {
