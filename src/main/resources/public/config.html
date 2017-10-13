@@ -72,7 +72,7 @@
 		$('form').submit(function(){
 			$.post("config/",$("form").serialize(),function(data){
 				if(data){
-					history.go(-1);	
+					history.go(-2);	
 				}
 			},"json");
 		}); 
