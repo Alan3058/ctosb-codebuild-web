@@ -118,13 +118,4 @@ public class CamelCaseUtil {
         }
         return sb.toString();
     }
-
-    public static void main(String[] args) {
-        System.out.println(CamelCaseUtil.toUnderlineName("ISOCertifiedStafF"));
-        System.out.println(CamelCaseUtil.toUnderlineName("CertifiedStaFF"));
-        System.out.println(CamelCaseUtil.toUnderlineName("UserID"));
-        System.out.println(CamelCaseUtil.toCamelCase("iso_certified_staff"));
-        System.out.println(CamelCaseUtil.toCamelCase("certified_staff"));
-        System.out.println(CamelCaseUtil.toCamelCase("user_id"));
-    }
 }
