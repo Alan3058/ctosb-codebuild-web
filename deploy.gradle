@@ -1,7 +1,7 @@
-apply from: 'build.gradle'
-
 apply plugin: 'maven'
 apply plugin: 'signing'
+
+
 
 def isReleaseBuild() {
     return VERSION_NAME.contains("SNAPSHOT") == false
