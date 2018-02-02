@@ -59,4 +59,11 @@ public class TemplateController {
 	public List<Template> getAll() {
 		return templateService.getAll();
 	}
+
+	@RequestMapping(value = "/update/basePath", method = RequestMethod.POST)
+	@ApiOperation(value = "更新基本包路径")
+	public boolean updateBasePath(@RequestParam("basePath") String basePath,
+			@RequestParam("configId") String configId) {
+		return templateService.updateBasePathByConfigId(basePath, configId);
+	}
 }

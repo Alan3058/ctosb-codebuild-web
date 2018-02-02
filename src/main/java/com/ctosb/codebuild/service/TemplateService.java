@@ -14,6 +14,8 @@ package com.ctosb.codebuild.service;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -56,5 +58,10 @@ public class TemplateService {
 
 	public List<Template> getAll() {
 		return templateRepository.findAll();
+	}
+
+	@Transactional
+	public boolean updateBasePathByConfigId(String basePath, String configId) {
+		return templateRepository.updateBasePathByConfigId(basePath, configId) > 0;
 	}
 }

@@ -40,4 +40,8 @@ public interface TemplateRepository extends JpaRepository<Template, String> {
 	@Modifying
 	@Query("update Template a set a.configId = ?1 where a.templateId in ?2")
 	int updateConfigIdByTemplateIds(String configId, List<String> templateIds);
+
+	@Modifying
+	@Query(value = "update template set generate_base_package_path = ?1, generate_package_path = replace(generate_package_path,generate_base_package_path,?1) where config_id = ?2 ", nativeQuery = true)
+	int updateBasePathByConfigId(String basePath, String configId);
 }

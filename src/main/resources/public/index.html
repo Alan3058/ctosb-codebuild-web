@@ -1,247 +1,267 @@
 <!DOCTYPE html>
 <html>
 <head>
-<base href="/" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>首页</title>
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- Bootstrap -->
-<link
-	href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
-	rel="stylesheet">
+    <base href="/"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>首页</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Bootstrap -->
+    <link
+            href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
+            rel="stylesheet">
 
-<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-      <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.css">
 </head>
 <body>
-	<div class="navbar navbar-inverse" role="navigation">
-		<div class="container">
-			<div class="navbar-header">
-				<a class="navbar-brand" href="#">ctosb-codebuild</a>
-			</div>
-			<div id="bs-navbar" class="navbar-collapse collapse"
-				aria-expanded="false">
-				<ul class="nav navbar-nav navbar-right">
-					<li><a href="datasource-list.html">数据源列表</a></li>
-					<li><a href="template-list.html">模版列表</a></li>
-				</ul>
-			</div>
-		</div>
-	</div>
-	<div>
-		<div id="container" class="container  main-container">
-			<div class="col-sm-12">
-				<div id="toolbar">
-		            <a href="config.html" class="btn btn-default">添加</a>
-		        </div>
-				<table id="table"></table>
-			</div>
-		</div>
-	</div>
-	
-	<!-- datasourceModal -->
-	<div class="modal fade" id="datasourceModal" tabindex="-1" role="dialog" aria-labelledby="datasourceModalLabel">
-	  <div class="modal-dialog" role="document">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	        <h4 class="modal-title" id="datasourceModalLabel">选择数据源</h4>
-	      </div>
-	      <div class="modal-body">
-	      	<div id="datasourceToolbar">
-		     	<a href="datasource.html" class="btn btn-default">添加</a>
-		    </div>
-	        <table id="datasourceTable"></table>
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-	        <button type="button" class="btn btn-primary" id="datasourceSave">保存</button>
-	      </div>
-	    </div>
-	  </div>
-	</div>
-	<!-- templateModal -->
-	<div class="modal fade" id="templateModal" tabindex="-1" role="dialog" aria-labelledby="templateModalLabel">
-	  <div class="modal-dialog" role="document">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	        <h4 class="modal-title" id="templateModalLabel">选择模版</h4>
-	      </div>
-	      <div class="modal-body">
-	      	<div id="templateToolbar">
-		     	<a href="template.html" class="btn btn-default">添加</a>
-		    </div>
-	        <table id="templateTable"></table>
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-	        <button type="button" class="btn btn-primary" id="templateSave">保存</button>
-	      </div>
-	    </div>
-	  </div>
-	</div>
-	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-	<script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
-	<!-- Include all compiled plugins (below), or include individual files as needed -->
-	<script
-		src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<!-- Latest compiled and minified JavaScript -->
-	<script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.js"></script>
-	<script src="/js/jquery.formutil.js"></script>
-	<script type="text/javascript">
-	$(function(){
-		var operateEvents = {'click .datasource': function (e, value, row, index) {
-	        	    	 								processDatasource(row);
-	        	    	 						  }
-							,'click .addTableTemplate': function (e, value, row, index) {
-															processTemplate(row,'byTable');
-	        	    	 								}
-							,'click .addSqlTemplate': function (e, value, row, index) {
-															processTemplate(row,'bySql');
-	        	    	 								}
-							};
-		
-		$('#table').bootstrapTable({
-		    url: 'config/?configName=',
-		    search: true,
-		    toolbar: '#toolbar',
-		    showRefresh: true,
-		    clickToSelect: true,
-		    columns: [{
-		        field: 'configName',
-		        title: '配置名称'
-		    }, {
-		        title: '数据源',
-		        formatter: function(value,row,index){
-		        	return row.datasource ? row.datasource.datasourceName : "";
-		        }
-		    }, {
-		        title: 'byTable模版',
-		        formatter: function(value,row,index){
-		        	var name="";
-		        	$.each(row.templates,function(k,v){
-		        		if(v.templateType == "byTable"){
-			        		name = v.templateName ? name+","+v.templateName : name;
-		        		}
-		        	});
-		        	return name ? name.substr(1) : name;
-		        }
-		    }, {
-		        title: 'bySql模版',
-		        formatter: function(value,row,index){
-		        	var name="";
-		        	$.each(row.templates,function(k,v){
-		        		if(v.templateType == "bySql"){
-		        			name = v.templateName ? name+","+v.templateName : name;
-		        		}
-		        	});
-		        	return name ? name.substr(1) : name;
-		        }
-		    }, {
-		        title: '操作',
-		        events: operateEvents,
-		        formatter: function(value,row,index){
-		        	var edit = '<a class="btn btn-default" href="config.html?configId='+row.configId+'">编辑</a>';
-		        	var addDatasource = '<a class="datasource btn btn-default">添加数据源</a>';
-		        	var addTableTemplate = '<a class="addTableTemplate btn btn-default">添加byTable模版</a>';
-		        	var addSqlTemplate = '<a class="addSqlTemplate btn btn-default">添加bySql模版</a>';
-		        	var addTemplate = '<a class="btn btn-default" href="template.html?configId='+row.configId+'">新增模版</a>';
-		        	var buildByTable = '<a class="btn btn-default" href="buildByTable.html?configId='+row.configId+'&datasourceId='+row.datasourceId+'">按表生成</a>';
-		        	var buildBySql = '<a class="btn btn-default" href="buildBySql.html?configId='+row.configId+'&datasourceId='+row.datasourceId+'">按SQL生成</a>';
-		        	return edit+addDatasource+addTableTemplate+addSqlTemplate+addTemplate+buildByTable+buildBySql;
-		        }
-		    }]
-		});
-		
-		
-		var processDatasource= function(row){
-			//添加数据源
-			var datasourceModal = $("#datasourceModal");
-			var datasourceTable = $('#datasourceTable');
-        	var configId = row.configId;
-			datasourceModal.on("show.bs.modal",function(){
-				datasourceTable.bootstrapTable({
-				    url: 'datasource/list/',
-				    search: true,
-				    toolbar: '#datasourceToolbar',
-				    showRefresh: true,
-				    clickToSelect: true,
-				    singleSelect: true,
-				    columns: [{
-				        checkbox: true
-				    },{
-				        field: 'datasourceName',
-				        title: '数据源名称'
-				    }]
-				});
-				$("#datasourceSave").click(function(){
-					var arr = datasourceTable.bootstrapTable("getSelections");
-					arr = $.map(arr,function(item){
-						return item.datasourceId;
-					});
-					$.post("config/datasource",{"configId":configId,"datasourceId":arr[0]},function(data){
-						if(data){
-							datasourceModal.modal('hide');
-						}
-					});
-				});	
-			});
-			datasourceModal.modal('show');
-		}
-		var processTemplate= function(row, type){
-			//添加模版
-			var templateModal = $("#templateModal");
-			var templateTable = $('#templateTable');
-        	var configId = row.configId;
-			templateModal.on("show.bs.modal",function(){
-				templateTable.bootstrapTable({
-				    search: true,
-				    toolbar: '#templateToolbar',
-				    showRefresh: true,
-				    clickToSelect: true,
-				    singleSelect: false,
-				    columns: [{
-				        checkbox: true
-				    },{
-				        field: 'templateName',
-				        title: '模版名称'
-				    },{
-				        field: 'templateType',
-				        title: '模版类型'
-				    }]
-				});
-				$.get('template/list/',function(data){
-					data = $.map(data,function(item){
-						if(item.templateType == type && (item.configId == null || item.configId == configId)){
-							return item;
-						}
-					});
-					templateTable.bootstrapTable("load",data);
-					templateTable.bootstrapTable("checkBy",{field:'configId',values:[configId]});
-				});
-				$("#templateSave").click(function(){
-					var arr = templateTable.bootstrapTable("getSelections");
-					arr = $.map(arr,function(item){
-						return item.templateId;
-					});
-					$.post("config/template",{"configId":configId,"templateType":type,"templateIds":arr},function(data){
-						if(data){
-							templateModal.modal('hide');
-						}
-					});
-				});	
-			});
-			templateModal.modal('show');
-		}
-	});
-	</script>
+<div class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">ctosb-codebuild</a>
+        </div>
+        <div id="bs-navbar" class="navbar-collapse collapse"
+             aria-expanded="false">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="datasource-list.html">数据源列表</a></li>
+                <li><a href="template-list.html">模版列表</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div>
+    <div id="container" class="container  main-container">
+        <div class="col-sm-12">
+            <div id="toolbar">
+                <a href="config.html" class="btn btn-default">添加</a>
+            </div>
+            <table id="table"></table>
+        </div>
+    </div>
+</div>
+
+<!-- datasourceModal -->
+<div class="modal fade" id="datasourceModal" tabindex="-1" role="dialog" aria-labelledby="datasourceModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="datasourceModalLabel">选择数据源</h4>
+            </div>
+            <div class="modal-body">
+                <div id="datasourceToolbar">
+                    <a href="datasource.html" class="btn btn-default">添加</a>
+                </div>
+                <table id="datasourceTable"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="datasourceSave">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- templateModal -->
+<div class="modal fade" id="templateModal" tabindex="-1" role="dialog" aria-labelledby="templateModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="templateModalLabel">选择模版</h4>
+            </div>
+            <div class="modal-body">
+                <div id="templateToolbar">
+                    <a href="template.html" class="btn btn-default">添加</a>
+                </div>
+                <table id="templateTable"></table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="templateSave">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script
+        src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdn.bootcss.com/bootbox.js/4.4.0/bootbox.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.js"></script>
+<script src="/js/jquery.formutil.js"></script>
+<script type="text/javascript">
+    $(function () {
+        var operateEvents = {
+            'click .datasource': function (e, value, row, index) {
+                processDatasource(row);
+            }
+            , 'click .addTableTemplate': function (e, value, row, index) {
+                processTemplate(row, 'byTable');
+            }
+            , 'click .addSqlTemplate': function (e, value, row, index) {
+                processTemplate(row, 'bySql');
+            }
+            , 'click .modifyBasePath': function (e, value, row, index) {
+                modifyBasePath(row);
+            }
+        };
+
+        $('#table').bootstrapTable({
+            url: 'config/?configName=',
+            search: true,
+            toolbar: '#toolbar',
+            showRefresh: true,
+            clickToSelect: true,
+            columns: [{
+                field: 'configName',
+                title: '配置名称'
+            }, {
+                title: '数据源',
+                formatter: function (value, row, index) {
+                    return row.datasource ? row.datasource.datasourceName : "";
+                }
+            }, {
+                title: 'byTable模版',
+                formatter: function (value, row, index) {
+                    var name = "";
+                    $.each(row.templates, function (k, v) {
+                        if (v.templateType == "byTable") {
+                            name = v.templateName ? name + "," + v.templateName : name;
+                        }
+                    });
+                    return name ? name.substr(1) : name;
+                }
+            }, {
+                title: 'bySql模版',
+                formatter: function (value, row, index) {
+                    var name = "";
+                    $.each(row.templates, function (k, v) {
+                        if (v.templateType == "bySql") {
+                            name = v.templateName ? name + "," + v.templateName : name;
+                        }
+                    });
+                    return name ? name.substr(1) : name;
+                }
+            }, {
+                title: '操作',
+                events: operateEvents,
+                formatter: function (value, row, index) {
+                    var edit = '<a class="btn btn-default" href="config.html?configId=' + row.configId + '">编辑</a>';
+                    var addDatasource = '<a class="datasource btn btn-default">添加数据源</a>';
+                    var addTableTemplate = '<a class="addTableTemplate btn btn-default">添加byTable模版</a>';
+                    var addSqlTemplate = '<a class="addSqlTemplate btn btn-default">添加bySql模版</a>';
+                    var addTemplate = '<a class="btn btn-default" href="template.html?configId=' + row.configId + '">新增模版</a>';
+                    var modifyBasePath = '<a class="modifyBasePath btn btn-default">修改模版基本包路径</a>';
+                    var buildByTable = '<a class="btn btn-default" href="buildByTable.html?configId=' + row.configId + '&datasourceId=' + row.datasourceId + '">按表生成</a>';
+                    var buildBySql = '<a class="btn btn-default" href="buildBySql.html?configId=' + row.configId + '&datasourceId=' + row.datasourceId + '">按SQL生成</a>';
+                    return edit + addDatasource + addTableTemplate + addSqlTemplate + addTemplate + modifyBasePath + buildByTable + buildBySql;
+                }
+            }]
+        });
+
+
+        var processDatasource = function (row) {
+            //添加数据源
+            var datasourceModal = $("#datasourceModal");
+            var datasourceTable = $('#datasourceTable');
+            var configId = row.configId;
+            datasourceModal.on("show.bs.modal", function () {
+                datasourceTable.bootstrapTable({
+                    url: 'datasource/list/',
+                    search: true,
+                    toolbar: '#datasourceToolbar',
+                    showRefresh: true,
+                    clickToSelect: true,
+                    singleSelect: true,
+                    columns: [{
+                        checkbox: true
+                    }, {
+                        field: 'datasourceName',
+                        title: '数据源名称'
+                    }]
+                });
+                $("#datasourceSave").click(function () {
+                    var arr = datasourceTable.bootstrapTable("getSelections");
+                    arr = $.map(arr, function (item) {
+                        return item.datasourceId;
+                    });
+                    $.post("config/datasource", {"configId": configId, "datasourceId": arr[0]}, function (data) {
+                        if (data) {
+                            datasourceModal.modal('hide');
+                        }
+                    });
+                });
+            });
+            datasourceModal.modal('show');
+        }
+        var processTemplate = function (row, type) {
+            //添加模版
+            var templateModal = $("#templateModal");
+            var templateTable = $('#templateTable');
+            var configId = row.configId;
+            templateModal.on("show.bs.modal", function () {
+                templateTable.bootstrapTable({
+                    search: true,
+                    toolbar: '#templateToolbar',
+                    showRefresh: true,
+                    clickToSelect: true,
+                    singleSelect: false,
+                    columns: [{
+                        checkbox: true
+                    }, {
+                        field: 'templateName',
+                        title: '模版名称'
+                    }, {
+                        field: 'templateType',
+                        title: '模版类型'
+                    }]
+                });
+                $.get('template/list/', function (data) {
+                    data = $.map(data, function (item) {
+                        if (item.templateType == type && (item.configId == null || item.configId == configId)) {
+                            return item;
+                        }
+                    });
+                    templateTable.bootstrapTable("load", data);
+                    templateTable.bootstrapTable("checkBy", {field: 'configId', values: [configId]});
+                });
+                $("#templateSave").click(function () {
+                    var arr = templateTable.bootstrapTable("getSelections");
+                    arr = $.map(arr, function (item) {
+                        return item.templateId;
+                    });
+                    $.post("config/template", {
+                        "configId": configId,
+                        "templateType": type,
+                        "templateIds": arr
+                    }, function (data) {
+                        if (data) {
+                            templateModal.modal('hide');
+                        }
+                    });
+                });
+            });
+            templateModal.modal('show');
+        }
+
+        function modifyBasePath(row) {
+            bootbox.prompt("请输入基本包路径", function (result) {
+                $.post("template/update/basePath", {basePath: result, configId: row.configId}, function () {
+                    bootbox.alert("操作成功");
+                });
+            });
+        }
+    });
+</script>
 </body>
 </html>
