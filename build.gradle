@@ -21,7 +21,6 @@ compileTestJava.options.encoding = "UTF-8"
 javadoc.options.encoding = "UTF-8"
 
 ext {
-	springVersion="1.5.8.RELEASE"
 	h2Version="1.4.196"
 	log4jdbcVersion="1.2"
 	springfoxVersion="2.7.0"
