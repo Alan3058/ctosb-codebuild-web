@@ -40,6 +40,7 @@
         <div class="col-sm-12">
             <div id="toolbar">
                 <a href="config.html" class="btn btn-default">添加</a>
+                <a onclick="initData()" class="btn btn-default">初始化数据</a>
             </div>
             <table id="table"></table>
         </div>
@@ -100,6 +101,16 @@
 <script src="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.js"></script>
 <script src="/js/jquery.formutil.js"></script>
 <script type="text/javascript">
+    function initData() {
+        $.get("init/data", function (data) {
+            if (data == true) {
+                bootbox.alert("操作成功");
+            } else {
+                bootbox.alert("操作失败");
+            }
+        });
+    }
+
     $(function () {
         var operateEvents = {
             'click .datasource': function (e, value, row, index) {
