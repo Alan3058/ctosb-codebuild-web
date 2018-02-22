@@ -256,9 +256,11 @@
 
         function modifyBasePath(row) {
             bootbox.prompt("请输入基本包路径", function (result) {
-                $.post("template/update/basePath", {basePath: result, configId: row.configId}, function () {
-                    bootbox.alert("操作成功");
-                });
+                if (result != null) {
+                    $.post("template/update/basePath", {basePath: result, configId: row.configId}, function () {
+                        bootbox.alert("操作成功");
+                    });
+                }
             });
         }
     });
